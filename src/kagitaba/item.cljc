@@ -16,6 +16,7 @@
    :field/title title
    :field/type (or type :unknown)
    :field/value value
+   :field/classification (field/classification (or type :unknown))
    :field/sensitive? (field/sensitive? (or type :unknown))})
 
 (defn section*
