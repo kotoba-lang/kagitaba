@@ -21,6 +21,14 @@
 
 (defn sensitive? [field-type] (contains? sensitive-types field-type))
 
+(defn classification
+  "Canonical information-flow label. Unknown future field types fail closed."
+  [field-type]
+  (cond
+    (contains? sensitive-types field-type) :restricted
+    (contains? value-types field-type) :internal
+    :else :restricted))
+
 (def login-field-designations
   "`details.loginFields[].designation` に現れる値(1Password の Login category
   専用フィールド、`sections` の外に別枠で置かれる)。"

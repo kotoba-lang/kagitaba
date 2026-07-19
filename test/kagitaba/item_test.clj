@@ -22,6 +22,8 @@
     (let [fields (:section/fields (first (:item/sections it)))]
       (is (= 2 (count fields)))
       (is (true? (:field/sensitive? (first fields))))
+      (is (= :restricted (:field/classification (first fields))))
+      (is (= :internal (:field/classification (second fields))))
       (is (false? (:field/sensitive? (second fields)))))))
 
 (deftest valid?-checks-required-keys
