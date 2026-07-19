@@ -3,7 +3,8 @@
  ;; import are pure .cljc (portable to JVM / SCI / ClojureScript). The only
  ;; JVM-only piece is `kagitaba.import.onepux-file` (zip + JSON IO), which
  ;; needs org.clojure/data.json — everything else is dependency-free.
- :deps {org.clojure/data.json {:mvn/version "2.5.0"}}
+ :deps {org.clojure/data.json {:mvn/version "2.5.0"}
+        io.github.kotoba-lang/security {:local/root "../security"}}
  :aliases
  {:test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner
