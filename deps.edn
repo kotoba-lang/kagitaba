@@ -5,7 +5,7 @@
  ;; needs org.clojure/data.json — everything else is dependency-free.
  :deps {org.clojure/data.json {:mvn/version "2.5.0"}
         io.github.kotoba-lang/security {:git/url "https://github.com/kotoba-lang/security.git"
-                                        :git/sha "405b0692ab83b7f18682e3c82b265626b6466982"}}
+                                        :git/sha "65811c9d6878e881357e98f9f9fe6a60aeff7070"}}
  :aliases
  {:test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner
