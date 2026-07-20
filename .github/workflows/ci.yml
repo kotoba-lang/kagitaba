@@ -16,5 +16,7 @@ jobs:
       - uses: DeLaGuardo/setup-clojure@13.4
         with:
           cli: latest
+      - name: Verify shared security adoption
+        run: clojure -M -m kotoba.security.adoption
       - run: clojure -M:test
       - run: clojure -M:lint
