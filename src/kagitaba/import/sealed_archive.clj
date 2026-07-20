@@ -6,6 +6,7 @@
   (:require [kotoba.security.abac :as abac]
             [kotoba.security.approval :as approval]
             [kotoba.security.crypto-policy :as crypto-policy]
+            [kotoba.security.effect :as effect]
             [kotoba.security.qualification :as qualification]
             [kotoba.security.resilience :as resilience]
             [kagitaba.import.admission :as import-admission]))
@@ -86,11 +87,25 @@
 
 (defn decrypt-admitted!
   "Invoke decrypt-fn only after every admission check succeeds."
-  [{:keys [decrypt-fn ciphertext envelope] :as request}]
-  (let [result (evaluate request)]
-    (when-not (:sealed-import/allowed? result)
-      (throw (ex-info "sealed archive import denied" result)))
-    (when-not (ifn? decrypt-fn)
-      (throw (ex-info "sealed archive decryptor required"
-                      (assoc result :sealed-import/violations [:decryptor-required]))))
-    (assoc result :sealed-import/plaintext (decrypt-fn envelope ciphertext))))
+  [{:keys [decrypt-fn ciphertext envelope ciphertext-digest] :as request}]
+  (try
+    (effect/guard!
+     {:evaluate evaluate
+      :request request
+      :approved? :sealed-import/allowed?
+      :action :secret-archive/decrypt
+      :resource :sealed-archive
+      :digest ciphertext-digest
+      :effect
+      (fn [result]
+        (when-not (ifn? decrypt-fn)
+          (throw (ex-info "sealed archive decryptor required"
+                          (assoc result
+                                 :sealed-import/violations
+                                 [:decryptor-required]))))
+        (assoc result :sealed-import/plaintext
+               (decrypt-fn envelope ciphertext)))})
+    (catch clojure.lang.ExceptionInfo error
+      (if (= :decision-denied (:security.effect/problem (ex-data error)))
+        (throw (ex-info "sealed archive import denied" (ex-data error) error))
+        (throw error)))))

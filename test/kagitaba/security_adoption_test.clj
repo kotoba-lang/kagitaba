@@ -5,7 +5,7 @@
             [kagitaba.import.sealed-archive]))
 
 (def required-security-sha
-  "49fc4ce359752e9fe6e547e9071b5b9b40da937a")
+  "c83183f7b66afda6a095e690ff617075a39cc0eb")
 
 (deftest central-security-control-is-an-immutable-runtime-dependency
   (let [deps (edn/read-string (slurp "deps.edn"))
