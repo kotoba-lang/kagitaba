@@ -1,5 +1,7 @@
-{:adoption/version 1 :consumer/id :kagitaba
- :security/git-sha "9316629ed15437ef1cf0f93b7f98e7cb31ef91d2"
- :required-control-namespaces [kotoba.security.capability kotoba.security.crypto-policy kotoba.security.qualification]
- :security-sensitive-entrypoints [kagitaba.import.admission kagitaba.import.sealed-archive]
+{:adoption/version 2 :consumer/id :kagitaba
+ :security/git-sha "23caaefa6ca35904f9d0c2dc0cbb3bec91ae8956"
+ :required-control-namespaces [kotoba.security.abac kotoba.security.approval kotoba.security.capability kotoba.security.crypto-policy kotoba.security.hardware kotoba.security.qualification kotoba.security.resilience]
+ :security-sensitive-entrypoints
+ {kagitaba.import.admission [kotoba.security.capability kotoba.security.hardware kotoba.security.qualification]
+  kagitaba.import.sealed-archive [kotoba.security.abac kotoba.security.approval kotoba.security.crypto-policy kotoba.security.qualification kotoba.security.resilience]}
  :exceptions []}
