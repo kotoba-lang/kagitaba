@@ -88,19 +88,24 @@
 (defn decrypt-admitted!
   "Invoke decrypt-fn only after every admission check succeeds."
   [{:keys [decrypt-fn ciphertext envelope ciphertext-digest] :as request}]
-  (effect/guard!
-   {:evaluate evaluate
-    :request request
-    :approved? :sealed-import/allowed?
-    :action :secret-archive/decrypt
-    :resource :sealed-archive
-    :digest ciphertext-digest
-    :effect
-    (fn [result]
-      (when-not (ifn? decrypt-fn)
-        (throw (ex-info "sealed archive decryptor required"
-                        (assoc result
-                               :sealed-import/violations
-                               [:decryptor-required]))))
-      (assoc result :sealed-import/plaintext
-             (decrypt-fn envelope ciphertext)))}))
+  (try
+    (effect/guard!
+     {:evaluate evaluate
+      :request request
+      :approved? :sealed-import/allowed?
+      :action :secret-archive/decrypt
+      :resource :sealed-archive
+      :digest ciphertext-digest
+      :effect
+      (fn [result]
+        (when-not (ifn? decrypt-fn)
+          (throw (ex-info "sealed archive decryptor required"
+                          (assoc result
+                                 :sealed-import/violations
+                                 [:decryptor-required]))))
+        (assoc result :sealed-import/plaintext
+               (decrypt-fn envelope ciphertext)))})
+    (catch clojure.lang.ExceptionInfo error
+      (if (= :decision-denied (:security.effect/problem (ex-data error)))
+        (throw (ex-info "sealed archive import denied" (ex-data error) error))
+        (throw error)))))
