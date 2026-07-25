@@ -22,7 +22,8 @@
                            ["export.data" minimal-export]
                            ["files/a.txt" "attachment"]]))]
     (is (= 1 (get-in result [:attributes :version])))
-    (is (= "attachment" (String. ^bytes (get-in result [:files "a.txt"]) "UTF-8")))))
+    (is (= "attachment" (String. ^bytes (get-in result [:files "a.txt"])
+                                  "UTF-8")))))
 
 (deftest unsafe-entry-names-fail-closed
   (doseq [name ["../export.data" "/export.data" "files\\secret"]]
@@ -37,7 +38,8 @@
 (deftest decompressed-entry-limit-is-enforced
   (with-redefs [onepux-file/limits (assoc onepux-file/limits :max-data-bytes 8)]
     (let [error (try
-                  (onepux-file/load-1pux (archive! [["export.data" minimal-export]]))
+                  (onepux-file/load-1pux
+                   (archive! [["export.data" minimal-export]]))
                   nil
                   (catch clojure.lang.ExceptionInfo e (ex-data e)))]
       (is (= :entry-too-large (:reason error))))))
