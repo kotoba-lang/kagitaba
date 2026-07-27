@@ -14,6 +14,7 @@
            [java.io ByteArrayOutputStream]))
 
 (def limits
+  "Hard limits are applied to decompressed bytes, not attacker-controlled ZIP metadata."
   {:max-entries 10000
    :max-attributes-bytes (* 1024 1024)
    :max-data-bytes (* 64 1024 1024)
