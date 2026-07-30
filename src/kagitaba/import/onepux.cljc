@@ -43,7 +43,10 @@
      :value (if (= vtype :unknown) (:value raw) (raw-value (:value raw)))}))
 
 (defn- ->section [raw]
-  {:title (:title raw) :fields (mapv ->field (:fields raw []))})
+  ;; 1PUX の section は表示名 `title` と、あれば安定 id の `name` を持つ。`name` を
+  ;; 捨てると section は title でしか同定できなくなり、利用側が id で引く経路
+  ;; （`kagitaba.contract`）から見えなくなる。無ければ nil のまま(title 照合に落ちる)。
+  {:id (:name raw) :title (:title raw) :fields (mapv ->field (:fields raw []))})
 
 ;; ───────── Login category(loginFields は sections の外) ─────────
 

@@ -162,3 +162,33 @@
     (is (= contract/not-recorded (contract/charges-per-year c)))
     (is (= contract/not-recorded (contract/annualized-minor c))
         "一回払いに年額は無い — 5000 を年額として出さない")))
+
+;; ── 外から入ってきた item ────────────────────────────────────────────────────
+
+(deftest contract-section-found-by-title-when-id-is-absent
+  (testing "1PUX import は section の id を持たないことがある"
+    (let [imported (item/item* {:category :membership :title "Claude Pro"
+                                :sections [{:title "Contract"   ; :id なし
+                                            :fields [{:id "plan" :title "plan"
+                                                      :type :string :value "Pro"}
+                                                     {:id "amount-minor"
+                                                      :title "amount (minor units)"
+                                                      :type :string :value "3000"}]}]})]
+      (is (contract/contract? imported)
+          "id で引けないだけで契約でないことにはならない")
+      (is (= "Pro" (:contract/plan (contract/read-contract imported))))
+      (is (= 3000 (:contract/amount-minor (contract/read-contract imported)))))))
+
+(deftest contract-section-title-match-ignores-case-and-space
+  (doseq [t ["contract" "  Contract  " "CONTRACT"]]
+    (let [it (item/item* {:category :membership :title "x"
+                          :sections [{:title t :fields [{:id "plan" :title "plan"
+                                                         :type :string :value "P"}]}]})]
+      (is (contract/contract? it) (str "title " (pr-str t))))))
+
+(deftest unrelated-sections-are-not-contracts
+  (let [it (item/item* {:category :membership :title "x"
+                        :sections [{:title "Contract details and notes"
+                                    :fields [{:id "n" :title "n" :type :string :value "v"}]}]})]
+    (is (not (contract/contract? it))
+        "部分一致で拾わない — 別 section を契約と誤認すると値が混ざる")))

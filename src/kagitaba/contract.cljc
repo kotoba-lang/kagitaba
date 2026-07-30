@@ -207,9 +207,21 @@
                  field-specs)})
 
 (defn contract-section
-  "item から `Contract` section を取り出す。無ければ nil。"
+  "item から `Contract` section を取り出す。無ければ nil。
+
+  id と title の**どちらか**で照合する。id だけで引くと、外から入ってきた item が
+  すべて素通りする —— 1PUX の section は title を持つが id を持たないことがあり、
+  `kagitaba.import.onepux` はそれをそのまま写すので `:section/id` が nil になる。
+  実測（2026-07-30）: 1Password で `Contract` section を作って書き出した item を
+  import すると `contract?` が false を返し、金額も周期も入っているのに契約として
+  一度も認識されなかった。title 照合は大文字小文字と前後空白を無視する
+  （1Password 側の表記揺れはこちらの問題ではない）。"
   [item]
-  (first (filter #(= section-id (:section/id %)) (:item/sections item))))
+  (let [norm #(some-> % str/trim str/lower-case)
+        title (norm section-title)]
+    (first (filter #(or (= section-id (:section/id %))
+                        (= title (norm (:section/title %))))
+                   (:item/sections item)))))
 
 (defn contract?
   "この item は契約事実を持つか。"
