@@ -6,7 +6,8 @@
   テンプレートは 1Password アプリの実 UI から観測した **best-effort な代表値**で、
   import の正しさには影響しない(import は各 item が実際に持つ section/field を
   そのまま写すだけで、このテンプレートを一切参照しない)。用途は
-  「新規 item を作るときの雛形」「未知フィールドが本当に未知かの目安」の 2 つに限る。")
+  「新規 item を作るときの雛形」「未知フィールドが本当に未知かの目安」の 2 つに限る。"
+  (:require [kagitaba.contract :as contract]))
 
 (def templates
   "category key → デフォルト section/field 雛形(`kagitaba.item/item*` の
@@ -67,6 +68,19 @@
    [{:title "Account" :fields [{:id "bank-name" :title "bank name" :type :string}
                                 {:id "account-number" :title "account number" :type :concealed}
                                 {:id "routing-number" :title "routing number" :type :string}
-                                {:id "pin" :title "PIN" :type :concealed}]}]})
+                                {:id "pin" :title "PIN" :type :concealed}]}]
+
+   ;; 継続課金のあるサービスは Login + Contract の 2 section を 1 item に持つ。
+   ;; ログインと契約を別 item に割ると片方だけ更新されて食い違う(kagitaba.contract)。
+   :membership
+   (into [{:title "Membership"
+           :fields [{:id "org" :title "group" :type :string}
+                    {:id "member-name" :title "member name" :type :string}
+                    {:id "member-number" :title "member number" :type :string}]}
+          {:title "Login"
+           :fields [{:id "username" :title "username" :type :string}
+                    {:id "password" :title "password" :type :concealed}
+                    {:id "otp" :title "one-time password" :type :totp}]}]
+         contract/template)})
 
 (defn for-category [k] (get templates k []))
