@@ -192,3 +192,14 @@
                                     :fields [{:id "n" :title "n" :type :string :value "v"}]}]})]
     (is (not (contract/contract? it))
         "部分一致で拾わない — 別 section を契約と誤認すると値が混ざる")))
+
+(deftest merchant-descriptor-round-trips
+  (testing "明細の加盟店表記はサービス名と別物なので、別の欄として持つ"
+    (let [c (contract/read-contract
+             (item-with {:plan "Pro" :merchant-descriptor "ANTHROPIC"}))]
+      (is (= "ANTHROPIC" (:contract/merchant-descriptor c)))
+      (is (= "Claude Pro" (:contract/title c))
+          "item の名前は人が読む名前のまま — 明細表記で上書きしない")))
+  (testing "書き写していなければ未記録（空文字でも推測でもない）"
+    (let [c (contract/read-contract (item-with {:plan "Pro"}))]
+      (is (= contract/not-recorded (:contract/merchant-descriptor c))))))
