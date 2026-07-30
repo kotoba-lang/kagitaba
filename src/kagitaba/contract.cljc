@@ -78,7 +78,13 @@
    {:id "payment-method" :title "payment method" :type :reference
     :key :contract/payment-method :parse :text}
    {:id "cancel-proc-id" :title "cancel procedure id" :type :string
-    :key :contract/cancel-proc-id :parse :text}])
+    :key :contract/cancel-proc-id :parse :text}
+   ;; 明細に出る加盟店名。「Claude Pro」の課金は明細では「ANTHROPIC」と出る——
+   ;; サービス名と加盟店表記は別物で、文字列としては一致しない。ここに 1 度書き
+   ;; 写しておくことだけが、課金と契約を**推測なしに**結びつける方法になる
+   ;; （突き合わせは kaiyaku.vault-ledger/reconcile）。
+   {:id "merchant-descriptor" :title "merchant on statement" :type :string
+    :key :contract/merchant-descriptor :parse :text}])
 
 (def section-id "contract")
 (def section-title "Contract")
