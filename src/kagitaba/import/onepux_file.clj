@@ -6,7 +6,7 @@
     export.data        — 本体(accounts/vaults/items の JSON)
     files/...           — 添付ファイル・カスタムアイコン(パス構造は非公開。
                            best-effort でファイル名 → bytes を集めるだけに留める)"
-  (:require [clojure.data.json :as json]
+  (:require [json.data-json :as json]
             [clojure.java.io :as io]
             [clojure.string :as str]
             [kagitaba.import.onepux :as onepux])
