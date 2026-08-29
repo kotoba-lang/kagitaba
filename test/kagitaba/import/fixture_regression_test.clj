@@ -1,5 +1,5 @@
 (ns kagitaba.import.fixture-regression-test
-  (:require [clojure.data.json :as json]
+  (:require [json.data-json :as json]
             [clojure.java.io :as io]
             [clojure.test :refer [deftest is]]
             [kagitaba.import.onepux :as onepux]))
