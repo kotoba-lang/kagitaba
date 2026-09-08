@@ -19,7 +19,7 @@
 
   時計・乱数・IO を一切持たない純 `.cljc`。`today` を渡すのは呼び出し側の責務で、
   ここには now が無い(同じ入力なら常に同じ出力)。"
-  (:require [clojure.string :as str]))
+  (:require [kotoba.lang.text :as str]))
 
 ;; ── 欠損の語彙 ───────────────────────────────────────────────────────────────
 
@@ -169,7 +169,7 @@
   (str y "-" (when (< m 10) "0") m "-" (when (< d 10) "0") d))
 
 (defn- parse-enum [s allowed]
-  (let [k (some-> s str/trim str/lower-case (str/replace "_" "-") keyword)]
+  (let [k (some-> s str/trim str/lower (str/replace "_" "-") keyword)]
     (when (contains? allowed k) k)))
 
 (defn- parse-value [parse raw]
@@ -180,7 +180,7 @@
       (or (case parse
             :text s
             :integer (parse-long* s)
-            :currency (when (re-matches #"^[A-Za-z]{3}$" s) (str/upper-case s))
+            :currency (when (re-matches #"^[A-Za-z]{3}$" s) (str/upper s))
             :date (parse-date s)
             :cycle (parse-enum s (set (keys cycles)))
             :status (parse-enum s statuses)
@@ -223,7 +223,7 @@
   一度も認識されなかった。title 照合は大文字小文字と前後空白を無視する
   （1Password 側の表記揺れはこちらの問題ではない）。"
   [item]
-  (let [norm #(some-> % str/trim str/lower-case)
+  (let [norm #(some-> % str/trim str/lower)
         title (norm section-title)]
     (first (filter #(or (= section-id (:section/id %))
                         (= title (norm (:section/title %))))

@@ -8,7 +8,7 @@
                            best-effort でファイル名 → bytes を集めるだけに留める)"
   (:require [json.data-json :as json]
             [clojure.java.io :as io]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [kagitaba.import.onepux :as onepux])
   (:import [java.util.zip ZipFile]
            [java.io ByteArrayOutputStream]))

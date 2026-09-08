@@ -18,7 +18,7 @@
   方針(単一不変条件): **インポートは絶対にデータを黙って落とさない**。未知の
   category/field 型もフォールバック keyword で保持し、`item-warnings` が
   目視確認用の警告を返す(エラーにはしない)。"
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [kagitaba.category :as category]
             [kagitaba.field :as field]
             [kagitaba.item :as item]))
