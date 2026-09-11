@@ -6,8 +6,8 @@ credit-card and unknown future category/field preservation without embedding per
 Release verification:
 
 ```bash
-clojure -M:test
-clojure -M:lint
+kbb -M:test
+kbb -M:lint
 ```
 
 Known limits:

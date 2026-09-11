@@ -83,6 +83,6 @@ kagitaba 自体は import した item を **どこにも永続化しない**。�
 ## 開発
 
 ```bash
-clojure -M:lint   # clj-kondo(errors fail)
-clojure -M:test   # clojure.test
+kbb -M:lint   # clj-kondo(errors fail)
+kbb -M:test   # clojure.test
 ```
