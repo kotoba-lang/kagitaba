@@ -6,7 +6,7 @@
     export.data        — 本体(accounts/vaults/items の JSON)
     files/...           — 添付ファイル・カスタムアイコン(パス構造は非公開。
                            best-effort でファイル名 → bytes を集めるだけに留める)"
-  (:require [json.data-json :as json]
+  (:require [kotoba.bytes :as kbytes] [json.data-json :as json]
             [clojure.java.io :as io]
             [kotoba.lang.text :as str]
             [kagitaba.import.onepux :as onepux])
@@ -28,7 +28,7 @@
 (defn- safe-name? [name]
   (and (string? name)
        (not (str/blank? name))
-       (<= (alength (.getBytes name "UTF-8")) (:max-name-bytes limits))
+       (<= (alength (kbytes/utf8-bytes name)) (:max-name-bytes limits))
        (not (str/includes? name "\u0000"))
        (not (str/includes? name "\\"))
        (not (str/starts-with? name "/"))
@@ -57,7 +57,7 @@
               (recur next-entry))))))))
 
 (defn- entry-str [^ZipFile zf entry max-bytes total]
-  (String. (entry-bytes zf entry max-bytes total) "UTF-8"))
+  (kbytes/utf8-string (entry-bytes zf entry max-bytes total)))
 
 (defn load-1pux
   "path(String/java.io.File)を読み、
