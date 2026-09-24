@@ -1,5 +1,5 @@
 (ns kagitaba.security-adoption-test
-  (:require [clojure.edn :as edn]
+  (:require [kotoba.lang.edn :as edn]
             [kotoba.test :refer [deftest is]]
             [kagitaba.import.admission]
             [kagitaba.import.sealed-archive]))
