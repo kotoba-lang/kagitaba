@@ -1,5 +1,5 @@
 (ns kagitaba.import.onepux-test
-  (:require [clojure.test :refer [deftest testing is]]
+  (:require [kotoba.test :refer [deftest testing is]]
             [kagitaba.item :as item]
             [kagitaba.import.onepux :as onepux]))
 
