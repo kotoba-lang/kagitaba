@@ -1,5 +1,5 @@
 (ns kagitaba.category-test
-  (:require [clojure.test :refer [deftest testing is]]
+  (:require [kotoba.test :refer [deftest testing is]]
             [kagitaba.category :as category]))
 
 (deftest known-categories

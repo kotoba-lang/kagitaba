@@ -1,5 +1,5 @@
 (ns kagitaba.item-test
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kotoba.test :refer [deftest is]]
             [kagitaba.item :as item]))
 
 (deftest item*-defaults

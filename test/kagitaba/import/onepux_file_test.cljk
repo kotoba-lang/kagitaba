@@ -1,5 +1,5 @@
 (ns kagitaba.import.onepux-file-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kagitaba.import.onepux-file :as onepux-file])
   (:import [java.io FileOutputStream]
            [java.util.zip ZipEntry ZipOutputStream]))

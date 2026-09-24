@@ -1,5 +1,5 @@
 (ns kagitaba.contract-test
-  (:require [clojure.test :refer [deftest is testing]]
+  (:require [kotoba.test :refer [deftest is testing]]
             [kagitaba.contract :as contract]
             [kagitaba.field :as field]
             [kagitaba.item :as item]

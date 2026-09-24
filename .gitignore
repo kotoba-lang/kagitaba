@@ -7,3 +7,4 @@ target/
 # never commit real vault exports or 1Password data
 *.1pux
 /tmp-import/
+.nbb/

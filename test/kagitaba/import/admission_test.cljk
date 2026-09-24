@@ -1,5 +1,5 @@
 (ns kagitaba.import.admission-test
-  (:require [clojure.test :refer [deftest is]]
+  (:require [kotoba.test :refer [deftest is]]
             [kagitaba.import.admission :as admission]))
 
 (def digest "sha256:1pux")
