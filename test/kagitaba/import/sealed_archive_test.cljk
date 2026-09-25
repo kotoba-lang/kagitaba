@@ -1,5 +1,5 @@
 (ns kagitaba.import.sealed-archive-test
-  (:require [kotoba.test :refer [deftest is]]
+  (:require [kotoba.lang.error :as kerror] [kotoba.test :refer [deftest is]]
             [kagitaba.import.sealed-archive :as sealed]))
 
 (def digest "sha256:ciphertext")
@@ -121,12 +121,12 @@
                          "sha256:other")]]
     (reset! decrypt-calls 0)
     (is (false? (:sealed-import/allowed? (sealed/evaluate bad))))
-    (is (thrown-with-msg? clojure.lang.ExceptionInfo
+    (is (thrown-with-msg? kerror/ExceptionInfo
                           #"sealed archive import denied"
                           (sealed/decrypt-admitted! bad)))
     (is (zero? @decrypt-calls))))
 
 (deftest missing-decryptor-fails-after-admission-without-plaintext
-  (is (thrown-with-msg? clojure.lang.ExceptionInfo
+  (is (thrown-with-msg? kerror/ExceptionInfo
                         #"sealed archive decryptor required"
                         (sealed/decrypt-admitted! (dissoc request :decrypt-fn)))))
