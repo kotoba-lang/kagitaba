@@ -1,5 +1,5 @@
 (ns kagitaba.import.admission-test
-  (:require [kotoba.test :refer [deftest is]]
+  (:require [kotoba.lang.error :as kerror] [kotoba.test :refer [deftest is]]
             [kagitaba.import.admission :as admission]))
 
 (def digest "sha256:1pux")
@@ -37,5 +37,5 @@
                (assoc-in request [:audit-receipt :receipt/signature] [:forged digest])
                (assoc-in request [:audit-receipt :receipt/artifact-digest] "sha256:other")]]
     (is (false? (:import/allowed? (admission/evaluate bad))))
-    (is (thrown-with-msg? clojure.lang.ExceptionInfo #"secret archive import denied"
+    (is (thrown-with-msg? kerror/ExceptionInfo #"secret archive import denied"
                           (admission/admit! bad)))))

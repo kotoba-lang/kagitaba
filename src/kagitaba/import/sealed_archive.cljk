@@ -3,7 +3,7 @@
 
   Authorization and hybrid-envelope validation complete before ciphertext is
   handed to a caller-supplied decryptor. Cryptography remains provider-owned."
-  (:require [kotoba.security.abac :as abac]
+  (:require [kotoba.lang.error :as kerror] [kotoba.security.abac :as abac]
             [kotoba.security.approval :as approval]
             [kotoba.security.crypto-policy :as crypto-policy]
             [kotoba.security.effect :as effect]
@@ -105,7 +105,7 @@
                                  [:decryptor-required]))))
         (assoc result :sealed-import/plaintext
                (decrypt-fn envelope ciphertext)))})
-    (catch clojure.lang.ExceptionInfo error
+    (catch kerror/ExceptionInfo error
       (if (= :decision-denied (:security.effect/problem (ex-data error)))
         (throw (ex-info "sealed archive import denied" (ex-data error) error))
         (throw error)))))

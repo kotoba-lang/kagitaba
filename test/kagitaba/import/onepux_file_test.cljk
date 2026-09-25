@@ -1,5 +1,5 @@
 (ns kagitaba.import.onepux-file-test
-  (:require [kotoba.bytes :as kbytes] [kotoba.test :refer [deftest is testing]]
+  (:require [kotoba.lang.error :as kerror] [kotoba.bytes :as kbytes] [kotoba.test :refer [deftest is testing]]
             [kagitaba.import.onepux-file :as onepux-file])
   (:import [java.io FileOutputStream]
            [java.util.zip ZipEntry ZipOutputStream]))
@@ -31,7 +31,7 @@
                     (onepux-file/load-1pux
                      (archive! [["export.data" minimal-export] [name "x"]]))
                     nil
-                    (catch clojure.lang.ExceptionInfo e (ex-data e)))]
+                    (catch kerror/ExceptionInfo e (ex-data e)))]
         (is (= :unsafe-entry-name (:reason error)))))))
 
 (deftest decompressed-entry-limit-is-enforced
@@ -40,5 +40,5 @@
                   (onepux-file/load-1pux
                    (archive! [["export.data" minimal-export]]))
                   nil
-                  (catch clojure.lang.ExceptionInfo e (ex-data e)))]
+                  (catch kerror/ExceptionInfo e (ex-data e)))]
       (is (= :entry-too-large (:reason error))))))
