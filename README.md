@@ -86,3 +86,16 @@ kagitaba 自体は import した item を **どこにも永続化しない**。�
 kbb -M:lint   # clj-kondo(errors fail)
 kbb -M:test   # clojure.test
 ```
+
+## Wi-Fi profiles
+
+`kagitaba.wifi/profile` makes a `:wireless-router` item from an opaque ID,
+verified account principal, SSID, password and personal WPA2/WPA3 security.
+SSID, password and principal are concealed fields. `network` validates and
+extracts a profile; `summary` is for the unlocked local UI and omits password
+and principal. SSIDs are bounded by UTF-8 bytes. The current Node transport's
+8–63 ASCII passphrase format is enforced; open/enterprise networks are not
+supported by this initial provisioning contract. This library does not persist
+anything. Send the whole item to the kagi governed sealing path immediately.
+
+Node/SCI test: `kbb --backend sci --config nbb.edn --classpath src test/kagitaba/wifi_runtime.cljk`.
