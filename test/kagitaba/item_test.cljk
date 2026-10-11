@@ -43,3 +43,11 @@
 (deftest category-known?
   (is (item/category-known? (item/item* {:category :login :title "x"})))
   (is (not (item/category-known? (item/item* {:category :made-up :title "x"})))))
+
+(deftest unknown-and-forged-field-labels-fail-closed
+  (let [it {:item/sections [{:section/fields
+                           [{:field/id "future" :field/type :unknown :field/sensitive? false}
+                            {:field/id "new" :field/type :future :field/sensitive? false}
+                            {:field/id "password" :field/type :concealed :field/sensitive? false}]}]}]
+    (is (= #{"future" "new" "password"}
+           (set (map :field/id (item/sensitive-fields it)))))))

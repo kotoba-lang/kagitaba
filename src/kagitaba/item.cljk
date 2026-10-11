@@ -63,7 +63,7 @@
 (defn sensitive-fields
   "全 section を横断して、値型が機微な field だけを集める。"
   [item]
-  (into [] (comp (mapcat :section/fields) (filter :field/sensitive?))
+  (into [] (comp (mapcat :section/fields) (filter #(field/sensitive? (:field/type %))))
         (:item/sections item)))
 
 (defn category-known?
