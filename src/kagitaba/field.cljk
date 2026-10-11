@@ -17,9 +17,11 @@
   "平文のままインデックス/graph に置いてはいけない値型。kagi 側はこの集合の
   field を含む item を必ず暗号化ペイロード(DEK 封緘 blob)側に置く
   ——:string/:menu 等の非機微フィールドと同じ経路には出さない。"
-  #{:concealed :totp :credit-card-number :ssh-key})
+  #{:concealed :totp :credit-card-number :ssh-key :unknown})
 
-(defn sensitive? [field-type] (contains? sensitive-types field-type))
+(defn sensitive? [field-type]
+  (or (contains? sensitive-types field-type)
+      (not (contains? value-types field-type))))
 
 (defn classification
   "Canonical information-flow label. Unknown future field types fail closed."
