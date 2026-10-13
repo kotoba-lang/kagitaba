@@ -1,6 +1,6 @@
 # ADR-0002: issuer・credential request・lease・policy の形
 
-**Status**: proposed · **Date**: 2026-10-10 · **Deciders**: Jun Kawasaki
+**Status**: accepted (implemented 2026-10-13) · **Date**: 2026-10-10 · **Deciders**: Jun Kawasaki
 
 kagi ADR-0003（credential broker と MCP）が使うデータの形を、kagitaba の原則
 （zero-dep `.cljc`、crypto/store 非依存、データを黙って落とさない）のまま定義する。
@@ -74,8 +74,8 @@ kagitaba 固有の正準 keyword。1PUX export では `:category/issuer` とし�
  :lease/issuer     "github-app: kotoba-fleet"
  :lease/principal  "did:key:z6Mk…"
  :lease/capability {…}                        ; 実際に発行した範囲（要求以下）
- :lease/issued-at  "2026-10-10T09:00:00Z"
- :lease/expires-at "2026-10-10T10:00:00Z"
+ :lease/issued-at  1791600000                ; unix 秒(時計を持たない導出のため整数)
+ :lease/expires-at 1791603600
  :lease/approval   {:by :policy :rule 0}      ; or {:by :passkey :approver "did:…"}
  :lease/state      :active}                   ; :active | :expired | :revoked
 ```
