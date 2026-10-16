@@ -40,6 +40,10 @@
 
 (def known-keys (set (keys by-key)))
 
+(def app-specific-keys
+  "1Password の `categoryUuid` を持たない、アプリ側で定義するカテゴリ。"
+  #{:issuer})
+
 (defn uuid->key
   "categoryUuid → 正準 keyword。未知の uuid は `:category/unknown` の
   vector [:unknown uuid] ではなく、素直に `(keyword \"category\" uuid)` に
@@ -56,4 +60,5 @@
 (defn label [k]
   (get-in categories [(key->uuid k) :label] (name k)))
 
-(defn known? [k] (contains? known-keys k))
+(defn known? [k] (or (contains? known-keys k)
+                     (contains? app-specific-keys k)))

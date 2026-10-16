@@ -26,6 +26,10 @@ kagi の DEK 封緘パイプラインに渡す(kagitaba はどこにも平文を
 | `kagitaba.item` | 正準 item/section/field shape、コンストラクタ、最小検証 |
 | `kagitaba.schema` | カテゴリ別デフォルトテンプレート(新規作成用、best-effort) |
 | `kagitaba.contract` | 契約(継続課金)を item の `Contract` section として表す正準形 + 時計なしの導出 |
+| `kagitaba.capability` | provider 中立の権限 + resource。水準 `none<read<write<admin`、`covers?` / `excess`(ADR-0002) |
+| `kagitaba.lease` | credential request の検証と lease(値を持たない発行記録)。`lease-state` は時計を引数に取る |
+| `kagitaba.policy` | `decide` → allow / approve / deny(拒否理由つき)。既定は閉じる |
+| `kagitaba.issuer` | 発行能力を持つ item(category `:issuer`)。`ceiling` = 発行できる最大の capability |
 | `kagitaba.import.onepux` | 1PUX JSON → kagitaba item の**純粋変換**(IO なし、`.cljc`) |
 | `kagitaba.import.onepux-file` | `.1pux` zip を読んで onepux へ渡す JVM 専用 IO 層 |
 
