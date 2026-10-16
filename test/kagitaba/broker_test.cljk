@@ -74,7 +74,7 @@
                                       (req (want {:contents :read} ["cloud-itonami/a"]))))))))
   (testing "no policy for the principal means deny"
     (is (= [{:reason :no-policy}]
-           (:reasons (policy/decide-in [fleet-policy] #{"node@zebulun"} :github-app
+           (:reasons (policy/decide-in [fleet-policy] #{"did:key:zNode"} :github-app
                                        (req (want {:contents :read} ["cloud-itonami/a"])))))))
   (is (= :allow (:decision (policy/decide-in [fleet-policy] #{"did:key:zNode" "node@joseph"} :github-app
                                              (req (want {:contents :read} ["cloud-itonami/a"])))))))

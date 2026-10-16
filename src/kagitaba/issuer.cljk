@@ -41,19 +41,22 @@
       (vec
        (sort
         (cond-> (remove #(contains? public %) required)
-          (not (and (integer? (:app-id public)) (pos? (:app-id public))))
+          (and (contains? public :app-id)
+               (not (and (integer? (:app-id public)) (pos? (:app-id public)))))
           (conj :invalid-app-id)
-          (not (and (sequential? installations) (seq installations)
-                    (every? (fn [installation]
-                              (and (map? installation)
-                                   (integer? (:id installation)) (pos? (:id installation))
-                                   (string? (:account installation))
-                                   (not (str/blank? (:account installation)))))
-                            installations)))
+          (and (contains? public :installations)
+               (not (and (sequential? installations) (seq installations)
+                         (every? (fn [installation]
+                                   (and (map? installation)
+                                        (integer? (:id installation)) (pos? (:id installation))
+                                        (string? (:account installation))
+                                        (not (str/blank? (:account installation)))))
+                                 installations))))
           (conj :invalid-installations)
-          (not (and (map? permissions) (seq permissions)
-                    (every? keyword? (keys permissions))
-                    (every? cap/level? (vals permissions))))
+          (and (contains? public :permissions)
+               (not (and (map? permissions) (seq permissions)
+                         (every? keyword? (keys permissions))
+                         (every? cap/level? (vals permissions)))))
           (conj :invalid-permissions)))))
     [:unknown-kind]))
 
