@@ -50,8 +50,10 @@
   "policy の集合から、要求者と issuer に当てはまるもので判定。当てはまるものが
   無ければ deny(既定は閉じる)。複数あれば最も寛容な判定(allow > approve > deny)。"
   [policies principal-ids issuer-kind request]
-  (let [ds (for [p policies :when (applies? p principal-ids issuer-kind)] (decide p request))
-        order {:allow 0 :approve 1 :deny 2}]
-    (if (seq ds)
-      (first (sort-by (comp order :decision) ds))
-      {:decision :deny :reasons [{:reason :no-policy}]})))
+  (if-not (contains? (set principal-ids) (:request/principal request))
+    {:decision :deny :reasons [{:reason :principal-mismatch}]}
+    (let [ds (for [p policies :when (applies? p principal-ids issuer-kind)] (decide p request))
+          order {:allow 0 :approve 1 :deny 2}]
+      (if (seq ds)
+        (first (sort-by (comp order :decision) ds))
+        {:decision :deny :reasons [{:reason :no-policy}]}))))

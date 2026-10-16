@@ -47,24 +47,35 @@
   "request から lease 記録を作る。`issued-at` は発行時刻(unix 秒)、`ttl-sec` は
   実際に与えた期限(request 以下)。"
   [{:keys [id request issuer issued-at ttl-sec approval capability]}]
-  {:lease/id id
-   :lease/request-id (:request/id request)
-   :lease/issuer issuer
-   :lease/principal (:request/principal request)
-   :lease/purpose (:request/purpose request)
-   :lease/capability (or capability (:request/capability request))
-   :lease/issued-at issued-at
-   :lease/expires-at (+ issued-at (min ttl-sec (:request/ttl-sec request) max-ttl-sec))
-   :lease/approval approval
-   :lease/state :active})
+  (let [granted (or capability (:request/capability request))]
+    (when-not (valid-request? request)
+      (throw (ex-info "cannot construct a lease from an invalid request"
+                      {:request-errors (request-errors request)})))
+    (when-not (and (integer? ttl-sec) (pos? ttl-sec))
+      (throw (ex-info "granted lease duration must be a positive integer" {:ttl-sec ttl-sec})))
+    (when-not (and (cap/valid? granted)
+                   (cap/covers? (:request/capability request) granted))
+      (throw (ex-info "granted capability exceeds or invalidates the request"
+                      {:requested (:request/capability request) :granted granted})))
+    {:lease/id id
+     :lease/request-id (:request/id request)
+     :lease/issuer issuer
+     :lease/principal (:request/principal request)
+     :lease/purpose (:request/purpose request)
+     :lease/capability granted
+     :lease/issued-at issued-at
+     :lease/expires-at (+ issued-at (min ttl-sec (:request/ttl-sec request) max-ttl-sec))
+     :lease/approval approval
+     :lease/state :active}))
 
 (defn lease-state
   "now(unix 秒)時点の状態。取り消しは記録、期限切れは導出。"
   [lease now]
   (cond
     (= :revoked (:lease/state lease)) :revoked
-    (>= now (:lease/expires-at lease)) :expired
-    :else :active))
+    (and (= :active (:lease/state lease)) (>= now (:lease/expires-at lease))) :expired
+    (= :active (:lease/state lease)) :active
+    :else :unknown))
 
 (defn active? [lease now] (= :active (lease-state lease now)))
 

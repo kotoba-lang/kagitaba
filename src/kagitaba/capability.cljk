@@ -34,11 +34,30 @@
   "パターン `*` / `org/*` / 完全一致。"
   [pattern resource]
   (cond
+    (not (and (string? pattern) (string? resource))) false
     (= pattern "*") true
     (str/ends-with? pattern "/*") (let [prefix (subs pattern 0 (dec (count pattern)))]
                                     (and (str/starts-with? resource prefix)
+                                         (not (str/blank? (subs resource (count prefix))))
                                          (not (str/includes? (subs resource (count prefix)) "/"))))
     :else (= pattern resource)))
+
+(defn- valid-resource? [resource]
+  (and (string? resource)
+       (not (str/blank? resource))
+       (not (str/starts-with? resource "/"))
+       (not (str/ends-with? resource "/"))
+       (not (str/includes? resource "//"))
+       (or (= "*" resource)
+           (let [parts (str/split resource #"/")
+                 account (first parts)
+                 repo (second parts)]
+             (and (= 2 (count parts))
+                  (not (str/blank? account))
+                  (not (str/blank? repo))
+                  (not (str/includes? account "*"))
+                  (or (= "*" repo)
+                      (not (str/includes? repo "*"))))))))
 
 (defn- resource-covered? [granted-patterns resource]
   (some #(resource-matches? % resource) granted-patterns))
@@ -79,4 +98,4 @@
        (every? keyword? (keys (:capability/access cap)))
        (every? level? (vals (:capability/access cap)))
        (sequential? (:capability/resources cap []))
-       (every? string? (:capability/resources cap []))))
+       (every? valid-resource? (:capability/resources cap []))))
